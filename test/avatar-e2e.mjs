@@ -44,6 +44,12 @@ const msg = await ev(`document.querySelector("#msg").textContent + " | " + docum
 check("設定画面で VRM を入れる", /設定しました/.test(msg), msg);
 await shot("5-options.png");
 
+// 1b. 大きく映して細かいところを見る (目・髪と顔の重なり・服の裏)
+await send("Emulation.setDeviceMetricsOverride", { width: 600, height: 800, deviceScaleFactor: 1, mobile: false });
+await send("Page.navigate", { url: `chrome-extension://${EXT}/avatar.html` }); await sleep(5000);
+await shot("4b-closeup.png");
+await send("Emulation.clearDeviceMetricsOverride");
+
 // 2. BOOTH の商品ページに立つ
 await send("Page.navigate", { url: "https://booth.pm/ja/items/4493526" }); await sleep(7000);
 const shown = await ev(`({ cls: ${sr}.querySelector(".box").className, waiting: ${sr}.querySelector(".avatar")?.classList.contains("waiting") })`);
