@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-new Function(readFileSync(new URL("../src/budget.js", import.meta.url), "utf8"))();
+new Function(readFileSync(new URL("../extension/budget.js", import.meta.url), "utf8"))();
 const S = globalThis.Suki;
 
 test("月の始まりで期間が決まる", () => {

@@ -6,7 +6,7 @@ BOOTH を見ているあいだ、今月の予算の残りを右下に出し続�
 ## 入れ方
 
 1. Chrome で `chrome://extensions` を開き、右上の「デベロッパーモード」を ON
-2. 「パッケージ化されていない拡張機能を読み込む」で `src/` を選ぶ
+2. 「パッケージ化されていない拡張機能を読み込む」で `extension/` を選ぶ
 3. ツールバーのスキ値札から、毎月の予算と月の始まりの日 (給料日など) を決める
 
 ## できること
@@ -34,11 +34,11 @@ BOOTH を見ているあいだ、今月の予算の残りを右下に出し続�
 
 ## 作り直し
 
-`src/` はそのまま Chrome に読み込める形 (ビルド済みの `avatar.js` / `options.js` を含む)。`avatar/` を変えたら:
+`extension/` はそのまま Chrome に読み込める形 (ビルド済みの `avatar.js` / `options.js` を含む)。`avatar/` を変えたら:
 
 ```sh
 npm install
-npm run build   # avatar/ → src/avatar.js, src/options.js (esbuild)
+npm run build   # avatar/ → extension/avatar.js, extension/options.js (esbuild)
 ```
 
 ## テスト

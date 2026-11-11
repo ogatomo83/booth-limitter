@@ -5,7 +5,7 @@
   "scripts": {
     "test": "node --test test/budget.test.mjs",
     "e2e": "node test/e2e.mjs",
-    "build": "esbuild avatar/avatar.js --bundle --format=esm --minify --legal-comments=none --outfile=src/avatar.js && esbuild avatar/options.js --bundle --format=esm --minify --outfile=src/options.js",
+    "build": "esbuild avatar/avatar.js --bundle --format=esm --minify --legal-comments=none --outfile=extension/avatar.js && esbuild avatar/options.js --bundle --format=esm --minify --outfile=extension/options.js",
     "e2e:avatar": "node test/avatar-e2e.mjs"
   },
   "devDependencies": {

@@ -17,7 +17,7 @@ const chrome = spawn(process.env.CHROME || "/Applications/Google Chrome.app/Cont
 let t; for (let i = 0; i < 50; i++) { try { t = await (await fetch("http://127.0.0.1:9335/json")).json(); break; } catch { await sleep(200); } }
 const browserWs = new WebSocket((await (await fetch("http://127.0.0.1:9335/json/version")).json()).webSocketDebuggerUrl);
 await new Promise(r => browserWs.onopen = r);
-const loaded = await new Promise(r => { browserWs.onmessage = e => r(JSON.parse(e.data)); browserWs.send(JSON.stringify({ id: 1, method: "Extensions.loadUnpacked", params: { path: resolve("src") } })); });
+const loaded = await new Promise(r => { browserWs.onmessage = e => r(JSON.parse(e.data)); browserWs.send(JSON.stringify({ id: 1, method: "Extensions.loadUnpacked", params: { path: resolve("extension") } })); });
 if (loaded.error) { console.log("拡張を入れられません:", loaded.error.message); chrome.kill(); process.exit(2); }
 const ws = new WebSocket(t.find(x => x.type === "page").webSocketDebuggerUrl); await new Promise(r => ws.onopen = r);
 let id = 0; const pend = new Map(); const errs = [];
