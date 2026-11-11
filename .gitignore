@@ -2,3 +2,14 @@ test/out/
 .DS_Store
 node_modules/
 test/models/
+# 3D モデルは絶対に入れない (アバターの規約で再配布禁止のものがあるため)
+*.vrm
+*.vrma
+*.fbx
+*.glb
+*.gltf
+*.blend
+*.blend1
+*.unitypackage
+*.obj
+*.psd
