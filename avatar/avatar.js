@@ -39,7 +39,7 @@ function resize() {
 }
 addEventListener("resize", resize);
 
-/** 腰から上が枠に収まるようにカメラを置く */
+/** 胸から上が枠に収まるようにカメラを置く */
 function frame() {
   vrm.scene.updateMatrixWorld(true);
   const p = new THREE.Vector3();
@@ -47,8 +47,9 @@ function frame() {
   const hips = vrm.humanoid.getNormalizedBoneNode("hips");
   head.getWorldPosition(p); headY = p.y;
   hips.getWorldPosition(p); const hipsY = p.y;
-  const top = headY + (headY - hipsY) * 0.42;
-  const bottom = hipsY - (headY - hipsY) * 0.12;
+  // 胸から上 (表情が読める大きさに)
+  const top = headY + (headY - hipsY) * 0.38;
+  const bottom = hipsY + (headY - hipsY) * 0.3;
   const cy = (top + bottom) / 2, half = (top - bottom) / 2;
   const fov = THREE.MathUtils.degToRad(camera.fov);
   const byH = half / Math.tan(fov / 2);

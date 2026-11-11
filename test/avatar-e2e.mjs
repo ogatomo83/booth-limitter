@@ -1,13 +1,14 @@
 // キャラクターの通しの確認: 設定画面で VRM を入れる → BOOTH の商品ページに立つ → 囁くと動く → 予算をこえると表情が変わる
 //   node test/avatar-e2e.mjs   (VRM は test/models/sample.vrm。なければ pixiv/three-vrm のサンプルを入れる)
+//   VRM=~/Downloads/xxx.vrm node test/avatar-e2e.mjs   で自分の VRM でも試せる
 // スクリーンショットは test/out/。カートには実際には入れない。
 import { spawn, execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-const MODEL = resolve("test/models/sample.vrm");
-if (!existsSync(MODEL)) {
+const MODEL = resolve(process.env.VRM || "test/models/sample.vrm");
+if (!process.env.VRM && !existsSync(MODEL)) {
   mkdirSync("test/models", { recursive: true });
   execFileSync("curl", ["-sL", "-o", MODEL, "https://raw.githubusercontent.com/pixiv/three-vrm/dev/packages/three-vrm/examples/models/VRM1_Constraint_Twist_Sample.vrm"]);
 }
