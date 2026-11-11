@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "スキ値札",
+  "version": "0.1.0",
+  "description": "BOOTH を見ているあいだ、今月の予算の残りを表示する。カートに入れるとき、買ったら残りがいくらになるかを囁く。",
+  "permissions": ["storage"],
+  "action": { "default_popup": "popup.html", "default_title": "スキ値札" },
+  "content_scripts": [
+    {
+      "matches": ["https://booth.pm/*", "https://*.booth.pm/*"],
+      "js": ["budget.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

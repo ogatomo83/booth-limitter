@@ -1,0 +1,9 @@
+{
+  "name": "suki-nefuda",
+  "private": true,
+  "description": "BOOTH の月の予算を見張る Chrome 拡張",
+  "scripts": {
+    "test": "node --test test/budget.test.mjs",
+    "e2e": "node test/e2e.mjs"
+  }
+}
