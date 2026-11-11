@@ -46,5 +46,6 @@ $("#add").addEventListener("submit", async e => {
   await S.addPurchase({ name: $("#addName").value.trim(), price: Math.max(0, +$("#addPrice").value || 0) });
   e.target.reset();
 });
+$("#chara").addEventListener("click", () => chrome.runtime.openOptionsPage());
 chrome.storage.onChanged.addListener((c, area) => { if (area === "local" && c[S.KEY]) render(); });
 render();

@@ -4,6 +4,13 @@
   "description": "BOOTH の月の予算を見張る Chrome 拡張",
   "scripts": {
     "test": "node --test test/budget.test.mjs",
-    "e2e": "node test/e2e.mjs"
+    "e2e": "node test/e2e.mjs",
+    "build": "esbuild avatar/avatar.js --bundle --format=esm --minify --legal-comments=none --outfile=src/avatar.js && esbuild avatar/options.js --bundle --format=esm --minify --outfile=src/options.js",
+    "e2e:avatar": "node test/avatar-e2e.mjs"
+  },
+  "devDependencies": {
+    "@pixiv/three-vrm": "^3.5.5",
+    "esbuild": "^0.28.2",
+    "three": "^0.187.0"
   }
 }

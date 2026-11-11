@@ -18,15 +18,35 @@ BOOTH を見ているあいだ、今月の予算の残りを右下に出し続�
 | カート (`ショップ.booth.pm/cart`) | 開いたときに、カートの合計と買ったあとの残りを囁く |
 | ご注文内容確認 (`checkout.booth.pm/checkout/step3`) | 開いたときに囁く。「注文を確定する」を押すと自動で記録する (確定ボタンは止めない。同じ注文は二重に数えない) |
 | ツールバー | 予算、月の始まり、囁くかどうか、今月の記録 (消す・手で足す)、月ごとの合計 |
+| キャラクター (ツールバー →「キャラクターを設定」) | VRM を入れると、右下の残りの上に立つ。余裕があるとにこにこ、3 割を切ると困り顔、こえるとうつむいてむっ。囁くときは口を動かして跳ね、マウスを目で追う |
+
+### キャラクター
+
+- 形式は VRM (0.x / 1.0)。VRChat 用のアバター (Unity / FBX) は UniVRM などで VRM に書き出す
+- ファイルは拡張機能の IndexedDB に置く (VRM は 10〜50MB あり chrome.storage に入らないので)。どこにも送らない
+- BOOTH のページには拡張機能の枠 (iframe、`avatar.html`) を埋め込み、その中で three.js + [@pixiv/three-vrm](https://github.com/pixiv/three-vrm) が描く。
+  ページの中に直接描かないのは、BOOTH のオリジンからは拡張機能に置いた VRM を読めないため
+- 枠はクリックを通す (`pointer-events: none`) ので、BOOTH の操作の邪魔をしない
+- 動きのデータは使わず、呼吸・まばたき・視線・表情・口をプログラムで動かしている
 
 - データは `chrome.storage.local` にだけ置く。BOOTH のページは読むだけで、どこにも送らない
 - ページの作りはクラス名ではなく「お支払金額」「小計:」「このショップのレジに進む」などの文字で探す (クラス名は変わりやすいので)
 
+## 作り直し
+
+`src/` はそのまま Chrome に読み込める形 (ビルド済みの `avatar.js` / `options.js` を含む)。`avatar/` を変えたら:
+
+```sh
+npm install
+npm run build   # avatar/ → src/avatar.js, src/options.js (esbuild)
+```
+
 ## テスト
 
 ```sh
-npm test        # 予算の計算 (Node)
-npm run e2e     # 拡張を入れた Chrome (headless) で確かめる
+npm test                      # 予算の計算 (Node)
+npm run e2e                   # 拡張を入れた Chrome (headless) で確かめる
+node test/avatar-e2e.mjs      # キャラクター (pixiv/three-vrm のサンプル VRM を test/models/ に取ってくる)
 ```
 
 `e2e` は公開されている商品ページを 1 つ開く。カートとご注文内容確認は `test/fixtures/` の写し (個人の情報なし) に

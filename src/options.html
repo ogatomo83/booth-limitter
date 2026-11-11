@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>スキ値札のキャラクター</title>
+<style>
+:root { --bg:#f6f7f9; --panel:#ffffff; --fg:#1d2328; --sub:#66707a; --line:#e3e6ea; --accent:#2f6fd6; --stage:#e9eef5; }
+@media (prefers-color-scheme: dark) { :root { --bg:#16191c; --panel:#1f2428; --fg:#e8ecef; --sub:#9aa5ae; --line:#353c42; --accent:#6da0ff; --stage:#262c33; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.7 "Hiragino Sans","Noto Sans JP",system-ui,sans-serif; }
+main { max-width:760px; margin:0 auto; padding:40px 20px; display:grid; gap:20px; }
+h1 { font-size:22px; margin:0; }
+.lead { color:var(--sub); margin:4px 0 0; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px; display:grid; grid-template-columns:200px 1fr; gap:24px; align-items:start; }
+.stage { width:200px; height:280px; border-radius:12px; background:var(--stage); overflow:hidden; }
+.stage iframe { width:100%; height:100%; border:0; }
+.info { display:grid; gap:12px; min-width:0; }
+.info h2 { font-size:18px; margin:0; overflow-wrap:anywhere; }
+.sub { color:var(--sub); font-size:13px; }
+a { color:var(--accent); overflow-wrap:anywhere; }
+.row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+label.btn, button { font:inherit; font-size:13px; border:1px solid var(--line); background:var(--panel); color:var(--fg); border-radius:10px; padding:6px 14px; cursor:pointer; }
+label.btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+label.btn:focus-within, button:focus-visible, input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+input[type=file] { position:absolute; opacity:0; width:1px; height:1px; }
+.check { display:flex; gap:8px; align-items:center; }
+#msg { min-height:1.7em; color:var(--sub); }
+ul { margin:0; padding-left:1.2em; color:var(--sub); font-size:13px; }
+@media (max-width:560px) { .card { grid-template-columns:1fr; } .stage { width:100%; } }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <h1>キャラクター</h1>
+    <p class="lead">BOOTH を見ているとき、右下の「今月の残り」の上にキャラクターが立ちます。予算に余裕があるとにこにこ、残りが 3 割を切ると困り顔、こえるとむっとします。囁くときは口を動かして跳ねます。</p>
+  </div>
+  <section class="card">
+    <div class="stage"><iframe src="avatar.html" title="キャラクターの表示"></iframe></div>
+    <div class="info">
+      <div id="empty">
+        <h2>まだキャラクターがいません</h2>
+        <p class="sub">VRM ファイル (.vrm) を選んでください。VRoid Studio で作ったモデルや、BOOTH で VRM 版が付いているアバターが使えます。</p>
+      </div>
+      <div id="current" hidden>
+        <h2 id="name"></h2>
+        <div class="sub" id="detail"></div>
+        <a id="license" target="_blank" rel="noopener" hidden></a>
+      </div>
+      <div class="row">
+        <label class="btn primary">VRM を選ぶ<input id="file" type="file" accept=".vrm"></label>
+        <button id="remove">外す</button>
+      </div>
+      <label class="check"><input id="enabled" type="checkbox"> BOOTH のページに出す</label>
+      <div id="msg" role="status"></div>
+    </div>
+  </section>
+  <ul>
+    <li>ファイルはこのブラウザの中 (拡張機能の保存領域) にだけ置きます。どこにも送りません。</li>
+    <li>VRChat 用のアバター (Unity のパッケージや FBX) はそのままでは使えません。UniVRM などで VRM に書き出してください。</li>
+    <li>アバターごとの利用規約は、上のリンク (VRM に書かれているもの) か、BOOTH の商品ページで確かめてください。</li>
+  </ul>
+</main>
+<script type="module" src="options.js"></script>
+</body>
+</html>

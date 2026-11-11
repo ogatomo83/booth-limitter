@@ -82,6 +82,10 @@
     .whisper p { margin:0; font-size:14px; }
     .whisper .acts { display:flex; gap:8px; justify-content:flex-end; }
     .primary { background:var(--c) !important; color:#fff !important; border-color:var(--c) !important; }
+    .avatar { position:absolute; right:-6px; bottom:38px; width:170px; height:230px; border:0; background:transparent; pointer-events:none; color-scheme:light dark; } /* 枠の中と配色を合わせる (合わないと背景が塗られる) */
+    .avatar.waiting { visibility:hidden; }
+    .has-avatar .whisper, .has-avatar .panel { right:160px; bottom:60px; }
+    .has-avatar .whisper::after { content:""; position:absolute; right:-8px; bottom:28px; border:8px solid transparent; border-right:0; border-left-color:var(--c); }
   </style>
   <div class="box">
     <div class="whisper" hidden role="alertdialog" aria-live="assertive"></div>
@@ -92,6 +96,42 @@
   const $ = s => root.querySelector(s);
   const box = $(".box"), panel = $(".panel"), pill = $(".pill"), wh = $(".whisper");
   const COLOR = { ok: "var(--ok)", low: "var(--low)", over: "var(--over)" };
+
+  // ------------------------------------------------------------ キャラクター (拡張機能の枠の中で three.js が描く)
+  const AVATAR_KEY = "sukiAvatar";
+  let avatar = null;
+  async function syncAvatar() {
+    const meta = (await chrome.storage.local.get(AVATAR_KEY))[AVATAR_KEY];
+    const want = !!meta && meta.enabled !== false;
+    if (want && !avatar) {
+      avatar = document.createElement("iframe");
+      avatar.className = "avatar";
+      avatar.classList.add("waiting"); // display:none にすると大きさ 0 で描き始めるので、見えないだけにする
+      avatar.title = "スキ値札のキャラクター";
+      avatar.setAttribute("aria-hidden", "true");
+      avatar.src = chrome.runtime.getURL("avatar.html");
+      box.prepend(avatar);
+    } else if (!want && avatar) {
+      avatar.remove();
+      avatar = null;
+      box.classList.remove("has-avatar");
+    }
+  }
+  addEventListener("message", e => {
+    if (!avatar || e.source !== avatar.contentWindow || e.data?.type !== "suki-avatar") return;
+    avatar.classList.toggle("waiting", !e.data.ready);
+    box.classList.toggle("has-avatar", !!e.data.ready);
+  });
+  const toAvatar = msg => avatar && !avatar.classList.contains("waiting") && avatar.contentWindow.postMessage(msg, new URL(avatar.src).origin);
+  const talk = mood => toAvatar({ type: "talk", mood, ms: 2600 });
+  let lastLook = 0;
+  document.addEventListener("mousemove", e => {
+    if (!avatar || avatar.classList.contains("waiting") || e.timeStamp - lastLook < 80) return;
+    lastLook = e.timeStamp;
+    const r = avatar.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height * 0.25;
+    toAvatar({ type: "look", x: (e.clientX - cx) / (innerWidth / 2), y: -(e.clientY - cy) / (innerHeight / 2) });
+  }, { passive: true });
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   let state = null;
@@ -137,6 +177,7 @@
     wh.querySelector("[data-act=close]").addEventListener("click", () => { wh.hidden = true; draw(); });
     panel.hidden = true;
     wh.hidden = false;
+    talk(S.mood(after ?? sm.remaining, sm.budget));
   }
 
   let noted = false;
@@ -200,6 +241,7 @@
     e.stopImmediatePropagation();
     const sm = S.summary(state);
     box.style.setProperty("--c", COLOR[S.mood(sm.remaining - v.price, sm.budget)]);
+    talk(S.mood(sm.remaining - v.price, sm.budget));
     wh.innerHTML = `<p>${esc(S.whisper(sm.remaining, v.price))}</p>
       <div class="acts"><button class="small" data-act="stop">やめておく</button><button class="small primary" data-act="go">カートに入れる</button></div>`;
     panel.hidden = true;
@@ -214,7 +256,12 @@
     });
   }, true);
 
-  chrome.storage.onChanged.addListener((changes, area) => { if (area === "local" && changes[S.KEY]) refresh(); });
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local") return;
+    if (changes[S.KEY]) refresh();
+    if (changes[AVATAR_KEY]) syncAvatar();
+  });
+  syncAvatar();
   // 商品ページの種類は後から描かれることがあるので、少し待って描き直す
   refresh();
   // 商品ページの種類やカートの中身は後から描かれることがあるので、少し待ってもう一度
